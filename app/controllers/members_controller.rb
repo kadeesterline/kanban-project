@@ -14,4 +14,5 @@ class MembersController < ApplicationController
 	def member_params
 		params.permit(:board_id, :user_id, :is_admin)
 	end
+	
 end
