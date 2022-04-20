@@ -1,18 +1,15 @@
 import React from "react"
 
-function AddBoardForm({
-	addBoardFormState,
-	setAddBoardFormState,
-	handleAddBoard,
-}) {
-	const handleChange = (event) => {
-		const { name, value } = event.target
-		setAddBoardFormState((formState) => ({ ...formState, [name]: value }))
+function AddListForm({ addListFormState, setAddListFormState, handleAddList }) {
+	function handleSubmit() {
+		handleAddList()
 	}
 
-	function handleSubmit(event) {
-		handleAddBoard()
+	const handleChange = (event) => {
+		const { name, value } = event.target
+		setAddListFormState((formState) => ({ ...formState, [name]: value }))
 	}
+
 	return (
 		<div>
 			<form onSubmit={handleSubmit}>
@@ -21,7 +18,7 @@ function AddBoardForm({
 					type='text'
 					placeholder='enter a name'
 					name='name'
-					value={addBoardFormState.name}
+					value={addListFormState.name}
 					onChange={handleChange}
 				/>
 			</form>
@@ -29,4 +26,4 @@ function AddBoardForm({
 	)
 }
 
-export default AddBoardForm
+export default AddListForm

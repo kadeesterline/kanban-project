@@ -7,6 +7,7 @@ class UsersController < ApplicationController
       render json: user, status: :created
     end
   
+    #GET /autologin
     def show
       render json: @current_user
     end

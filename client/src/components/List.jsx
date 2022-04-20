@@ -2,12 +2,15 @@ import React from "react"
 import Task from "./Task"
 import UpdateListForm from "./UpdateListForm"
 import { useEffect, useState } from "react"
+import { Draggable } from "react-beautiful-dnd"
+import { useUser } from "../context/UserContext"
 
-function List({ lists, setLists, list }) {
+function List({ lists, setLists, list, currentMember }) {
 	const [tasks, setTasks] = useState([])
 	const [isAddTask, setIsAddTask] = useState(false)
 	const [newTaskTitle, setNewTaskTitle] = useState("")
 	const [showEditList, setShowEditList] = useState(false)
+	const currentUser = useUser()
 
 	let initialUpdateListFormState = {
 		name: "",
@@ -42,23 +45,27 @@ function List({ lists, setLists, list }) {
 	}
 
 	function handleAddTask(task) {
+		console.log(task)
+		console.log(currentUser)
 		fetch("/tasks", {
 			method: "POST",
 			headers: {
 				"Content-type": "application/json",
+				accept: "application/json",
 			},
-			body: JSON.stringify(task),
+			body: JSON.stringify({ ...task }),
 		})
 			.then((r) => r.json())
 			.then((task) => setTasks([...tasks, task]))
 	}
 
 	function onNewTask() {
+		console.log("current member", currentMember)
 		let task = {
 			title: newTaskTitle,
 			list_id: list.id,
-			user_id: 1,
-			member_id: 1,
+			user_id: currentUser.id,
+			member_id: currentMember.id,
 		}
 		handleAddTask(task)
 		setIsAddTask((isAddTask) => !isAddTask)
@@ -71,22 +78,44 @@ function List({ lists, setLists, list }) {
 		<div className='border border-solid'>
 			<div className='bg-slate-200'>
 				<h1>{list.name}</h1>
-				{tasks?.map((task) => (
-					<Task
-						task={task}
-						tasks={tasks}
-						setTasks={setTasks}
-						key={task.id + task.title}
-					/>
-				))}
+				{tasks?.map((task, index) => {
+					return (
+						<Draggable
+							key={task.id}
+							draggableId={task?.id?.toString()}
+							index={index}
+						>
+							{(provided, snapshot) => {
+								return (
+									<div
+										ref={provided.innerRef}
+										{...provided.draggableProps}
+										{...provided.dragHandleProps}
+										style={{
+											backgroundColor: snapshot.isDraggin ? "#263b4A" : "",
+											...provided.draggableProps.style,
+										}}
+									>
+										<Task
+											task={task}
+											tasks={tasks}
+											setTasks={setTasks}
+											key={task.id + task.title}
+										/>
+									</div>
+								)
+							}}
+						</Draggable>
+					)
+				})}
 				{isAddTask ? (
 					<form onSubmit={onNewTask}>
 						<input
 							type='text'
 							value={newTaskTitle}
 							onChange={(e) => setNewTaskTitle(e.target.value)}
-						></input>
-						<button type='submit'></button>
+						/>
+						<button className='rounded-full bg-green-200 m-2 p-1' type='submit'></button>
 					</form>
 				) : (
 					<div></div>
@@ -117,6 +146,7 @@ function List({ lists, setLists, list }) {
 					updateListFormState={updateListFormState}
 					setUpdateListFormState={setUpdateListFormState}
 					handleUpdateList={handleUpdateList}
+					
 				/>
 			) : null}
 		</div>

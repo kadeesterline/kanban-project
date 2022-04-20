@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 	post '/login', to: 'sessions#create'
 	delete '/logout', to: 'sessions#destroy'
 	get '/sessions/:user_id', to: 'sessions#show'
-	get '/authorize_user', to: 'users#show'
+	get '/autologin', to: 'users#show'
 	post '/joinboard', to: 'sessions#join_board'
  
   # Routing logic: fallback requests for React Router.
