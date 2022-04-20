@@ -64,15 +64,6 @@ function List({ lists, setLists, list }) {
 		setIsAddTask((isAddTask) => !isAddTask)
 	}
 
-	const taskListed = tasks?.map((task) => (
-		<Task
-			task={task}
-			tasks={tasks}
-			setTasks={setTasks}
-			key={task.id + task.title}
-		/>
-	))
-
 	function handleShowEditList() {
 		setShowEditList(!showEditList)
 	}
@@ -80,7 +71,14 @@ function List({ lists, setLists, list }) {
 		<div className='border border-solid'>
 			<div className='bg-slate-200'>
 				<h1>{list.name}</h1>
-				{taskListed}
+				{tasks?.map((task) => (
+					<Task
+						task={task}
+						tasks={tasks}
+						setTasks={setTasks}
+						key={task.id + task.title}
+					/>
+				))}
 				{isAddTask ? (
 					<form onSubmit={onNewTask}>
 						<input

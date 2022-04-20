@@ -1,9 +1,9 @@
 import React from "react"
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-
 import UpdateBoardForm from "../components/UpdateBoardForm"
 import List from "../components/List"
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 function Board() {
 	let navigate = useNavigate()
@@ -58,49 +58,52 @@ function Board() {
 		setShowUpdateBoard(!showUpdateBoard)
 	}
 
-	const listItems = lists?.map((list) => (
-		<List
-			key={list.name + list.id}
-			list={list}
-			lists={lists}
-			setLists={setLists}
-		/>
-	))
-
-	//const orderedListItems = listItems.sortby(list.rank)
-
 	return (
-		<div>
-			<h1 className='text-xl'>{board.name}</h1>
-			<br />
-			<br />
-			<div className='grid grid-cols-3'>{listItems}</div>
-			<br />
-			<button className='rounded-full bg-green-200 m-2 p-1'> Add List </button>
-			<br />
-			<button
-				onClick={handleDeleteBoard}
-				className='rounded-full bg-red-200 m-2 p-1'
-			>
-				{" "}
-				Delete Board{" "}
-			</button>
-			<br />
-			<button
-				onClick={handleShowEditBoard}
-				className='rounded-full bg-yellow-200 m-2 p-1'
-			>
-				{" "}
-				Update Board{" "}
-			</button>
-			<br />
-			{showUpdateBoard ? (
-				<UpdateBoardForm
-					updateFormState={updateFormState}
-					setUpdateFormState={setUpdateFormState}
-					handleUpdateBoard={handleUpdateBoard}
-				/>
-			) : null}
+		<div className='flex justify-center h-100'>
+			<DragDropContext onDragEnd={(result) => console.log(result)}>
+				<h1 className='text-xl'>{board.name}</h1>
+				<br />
+				<br />
+				<div className='grid grid-cols-3'>
+					{lists?.map((list) => (
+						<List
+							key={list.name + list.id}
+							list={list}
+							lists={lists}
+							setLists={setLists}
+						/>
+					))}
+				</div>
+				<br />
+				<button className='rounded-full bg-green-200 m-2 p-1'>
+					{" "}
+					Add List{" "}
+				</button>
+				<br />
+				<button
+					onClick={handleDeleteBoard}
+					className='rounded-full bg-red-200 m-2 p-1'
+				>
+					{" "}
+					Delete Board{" "}
+				</button>
+				<br />
+				<button
+					onClick={handleShowEditBoard}
+					className='rounded-full bg-yellow-200 m-2 p-1'
+				>
+					{" "}
+					Update Board{" "}
+				</button>
+				<br />
+				{showUpdateBoard ? (
+					<UpdateBoardForm
+						updateFormState={updateFormState}
+						setUpdateFormState={setUpdateFormState}
+						handleUpdateBoard={handleUpdateBoard}
+					/>
+				) : null}
+			</DragDropContext>
 		</div>
 	)
 }
