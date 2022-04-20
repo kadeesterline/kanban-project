@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import './styles/App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from './pages/Login'
+import Signup from './pages/Signup'
+import Home from './pages/Home'
+import Boards from './pages/Boards'
+import Board from './pages/Board';
+import TaskEdit from './components/TaskEdit';
 
 function App() {
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      {/*<NavBar />*/}
+      <Routes>
+       <Route index element={<Home />}></Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/boards" element={<Boards />} /> 
+        <Route path="/boards/:id" element={<Board />}>
+          <Route path="tasks/:id" element={<TaskEdit />}></Route>
+        </Route>  
+        <Route path="*" element={<p>There's nothing here: 404</p>} />
+      </Routes>
+    </Router>
   );
 }
 
