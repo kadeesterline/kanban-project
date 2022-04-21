@@ -142,21 +142,12 @@ function Board() {
 		setLists((lists) => (lists = [...newLists]))
 	}
 
-	//if not member yet, join table
-	if (!currentMember?.id)
-		return (
-			<div>
-				<p>Not a member</p>
-				<button onClick={handleJoinBoard}>Join Board</button>
-			</div>
-		)
-
 	return (
 		<>
 			{!currentMember?.id ? (
 				<div>
-					<p>Not a member</p>
-					<button onClick={handleJoinBoard}>Join Board</button>
+					<p>You are not a member of this board</p>
+					<button onClick={handleJoinBoard}>Join!</button>
 				</div>
 			) : (
 				<div className='h-full'>
