@@ -26,16 +26,18 @@ function Login() {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(user),
-		}).then((r) => {
-			if (r.ok) {
-				r.json().then((user) => {
-					console.log(user)
-					handleSetMember(user.members)
-					handleSetUser(user)
-					navigate("/boards")
-				})
-			}
 		})
+			.then((r) => {
+				if (r.ok) {
+					r.json().then((user) => {
+						console.log(user)
+						handleSetMember(user.members)
+						handleSetUser(user)
+						navigate("/boards")
+					})
+				}
+			})
+			.catch((error) => console.log(error))
 	}
 
 	function handleChange(e) {

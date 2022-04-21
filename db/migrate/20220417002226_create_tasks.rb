@@ -9,7 +9,7 @@ class CreateTasks < ActiveRecord::Migration[6.1]
 			t.integer :priority
 			t.datetime :start_date
 			t.datetime :due_date
-			t.text :rank
+			t.text :rank, collation: 'C'
 
 			t.timestamps
 		end
