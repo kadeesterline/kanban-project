@@ -15,7 +15,7 @@ function AddBoardForm({
 	}
 	return (
 		<div>
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit} autoComplete='false'>
 				<label>name</label>
 				<input
 					type='text'

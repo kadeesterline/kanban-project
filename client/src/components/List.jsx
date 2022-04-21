@@ -10,6 +10,7 @@ function List({ lists, setLists, list, currentMember }) {
 	const [isAddTask, setIsAddTask] = useState(false)
 	const [newTaskTitle, setNewTaskTitle] = useState("")
 	const [showEditList, setShowEditList] = useState(false)
+	const [listState, setListState] = useState([])
 	const currentUser = useUser()
 
 	let initialUpdateListFormState = {
@@ -22,6 +23,7 @@ function List({ lists, setLists, list, currentMember }) {
 
 	useEffect(() => {
 		setTasks(list?.tasks)
+		setListState(list)
 	}, [list])
 
 	function handleDeleteList() {
@@ -42,11 +44,11 @@ function List({ lists, setLists, list, currentMember }) {
 			},
 			body: JSON.stringify(updateListFormState),
 		})
+			.then((r) => r.json())
+			.then(setListState(updateListFormState))
 	}
 
 	function handleAddTask(task) {
-		console.log(task)
-		console.log(currentUser)
 		fetch("/tasks", {
 			method: "POST",
 			headers: {
@@ -56,11 +58,14 @@ function List({ lists, setLists, list, currentMember }) {
 			body: JSON.stringify({ ...task }),
 		})
 			.then((r) => r.json())
-			.then((task) => setTasks([...tasks, task]))
+			.then((task) => {
+				setNewTaskTitle("")
+				setTasks([...tasks, task])
+				setIsAddTask((isAddTask) => !isAddTask)
+			})
 	}
 
 	function onNewTask() {
-		console.log("current member", currentMember)
 		let task = {
 			title: newTaskTitle,
 			list_id: list.id,
@@ -68,16 +73,15 @@ function List({ lists, setLists, list, currentMember }) {
 			member_id: currentMember.id,
 		}
 		handleAddTask(task)
-		setIsAddTask((isAddTask) => !isAddTask)
 	}
 
 	function handleShowEditList() {
 		setShowEditList(!showEditList)
 	}
 	return (
-		<div className='border border-solid'>
+		<div className='border border-solid w-80'>
 			<div className='bg-slate-200'>
-				<h1>{list.name}</h1>
+				<h1>{listState.name}</h1>
 				{tasks?.map((task, index) => {
 					return (
 						<Draggable
@@ -115,7 +119,9 @@ function List({ lists, setLists, list, currentMember }) {
 							value={newTaskTitle}
 							onChange={(e) => setNewTaskTitle(e.target.value)}
 						/>
-						<button className='rounded-full bg-green-200 m-2 p-1' type='submit'></button>
+						<button className='rounded-full bg-green-200 m-2 p-1' type='submit'>
+							Add Task
+						</button>
 					</form>
 				) : (
 					<div></div>
@@ -146,7 +152,6 @@ function List({ lists, setLists, list, currentMember }) {
 					updateListFormState={updateListFormState}
 					setUpdateListFormState={setUpdateListFormState}
 					handleUpdateList={handleUpdateList}
-					
 				/>
 			) : null}
 		</div>

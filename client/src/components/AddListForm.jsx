@@ -1,7 +1,8 @@
 import React from "react"
 
 function AddListForm({ addListFormState, setAddListFormState, handleAddList }) {
-	function handleSubmit() {
+	function handleSubmit(event) {
+		event.preventDefault()
 		handleAddList()
 	}
 
@@ -12,7 +13,7 @@ function AddListForm({ addListFormState, setAddListFormState, handleAddList }) {
 
 	return (
 		<div>
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit} autoComplete='false'>
 				<label>name</label>
 				<input
 					type='text'
