@@ -1,14 +1,11 @@
 class ListsController < ApplicationController
-	#skip_before_action :authorize_user
-	# skip_before_action :authorize_member
+	# skip_before_action :authorize_user
 
-	def index 
+	def index
 		render json: List.all
 	end
 
-	
 	def create
-		
 		list = List.create!(list_params)
 		render json: list, status: :created
 	end
@@ -34,5 +31,4 @@ class ListsController < ApplicationController
 	def list_params
 		params.permit(:name, :board_id)
 	end
-
 end

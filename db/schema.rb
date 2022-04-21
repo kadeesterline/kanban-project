@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 2022_04_17_002335) do
   create_table "lists", force: :cascade do |t|
     t.bigint "board_id", null: false
     t.string "name"
-    t.text "rank"
+    t.text "rank", collation: "C"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["board_id"], name: "index_lists_on_board_id"
@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 2022_04_17_002335) do
     t.integer "priority"
     t.datetime "start_date"
     t.datetime "due_date"
-    t.text "rank"
+    t.text "rank", collation: "C"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["list_id"], name: "index_tasks_on_list_id"

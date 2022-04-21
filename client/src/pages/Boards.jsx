@@ -3,12 +3,14 @@ import { useEffect, useState } from "react"
 import BoardCell from "../components/BoardCell"
 import AddBoardForm from "../components/AddBoardForm"
 import { useUser } from "../context/UserContext"
+import { useMember } from "../context/MemberContext"
 
 function Boards() {
 	const [boards, setBoards] = useState([])
 	const [showAddBoard, setShowAddBoard] = useState(false)
 
 	const currentUser = useUser()
+	const currentMemberArray = useMember()
 
 	let initialAddBoardFormState = {
 		name: "",
@@ -26,7 +28,8 @@ function Boards() {
 			},
 		})
 			.then((r) => r.json())
-			.then((r) => setBoards(r))
+			.then((boards) => setBoards(boards))
+			.catch((error) => console.log(error))
 	}, [])
 
 	function handleShowAddBoard() {
@@ -44,9 +47,12 @@ function Boards() {
 		})
 	}
 
-	const boardCells = boards?.map((board) => (
-		<BoardCell key={board.name + board.id} name={board.name} id={board.id} />
-	))
+	const boardCells =
+		boards.length > 0 &&
+		boards?.map((board) => (
+			<BoardCell key={board.name + board.id} name={board.name} id={board.id} />
+		))
+
 	return (
 		<div>
 			<div className='grid grid-cols-4'>{boardCells}</div>

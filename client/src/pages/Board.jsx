@@ -31,7 +31,7 @@ function Board() {
 
 	//sets the current member of the board
 	useEffect(() => {
-		if (boardMembers.length > 0 && currentMemberArray.length > 0) {
+		if (boardMembers?.length > 0 && currentMemberArray?.length > 0) {
 			let member = boardMembers.find((bMember) => {
 				return currentMemberArray.filter((member) => {
 					return member.id === bMember.id

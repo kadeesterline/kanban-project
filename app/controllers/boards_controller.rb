@@ -1,19 +1,22 @@
 class BoardsController < ApplicationController
-  #skip_before_action :authorize, except: [:index]
-
-	 #skip_before_action :authorize_member
+	skip_before_action :authorize, only: [:index]
 
 	def index
 		render json: Board.all, status: :ok
 	end
 
 	def show
-		render json: find_board, include: ['lists', 'lists.tasks', 'members']
+		render json: find_board, include: %w[lists lists.tasks members]
 	end
 
 	def create
 		board = Board.create!(board_params)
-		member = Member.create!(user_id: params[:user_id], board_id: board.id, is_admin: true)
+		member =
+			Member.create!(
+				user_id: params[:user_id],
+				board_id: board.id,
+				is_admin: true,
+			)
 		render json: board, status: :created
 	end
 
@@ -38,5 +41,4 @@ class BoardsController < ApplicationController
 	def board_params
 		params.permit(:name)
 	end
-
 end
