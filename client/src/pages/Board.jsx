@@ -153,7 +153,7 @@ function Board() {
 
 	return (
 		<>
-			{!currentMember.id ? (
+			{!currentMember?.id ? (
 				<div>
 					<p>Not a member</p>
 					<button onClick={handleJoinBoard}>Join Board</button>
