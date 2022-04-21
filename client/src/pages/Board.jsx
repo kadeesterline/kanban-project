@@ -117,23 +117,27 @@ function Board() {
 	}
 
 	function handleDragEnd(result, lists, setLists) {
-		console.log(result)
+		//result variable is an object that has a destination and a source
+		//console.log('results:', result)
 		if (!result.destination) return
 		const { source, destination } = result
-		// console.log("lists:", lists)
+		//lists variable is the lists that belong to the board
+		//console.log("lists:", lists)
+		//list variable is the list that is the parent of the moving task
 		const list = lists.find(
 			(l) => parseInt(source.droppableId) === parseInt(l.id)
 		)
-		// console.log("list:", list)
+		//console.log("list:", list)
+		//copiedTasks is the tasks in the correct order
 		const copiedTasks = [...list.tasks]
-		// console.log("tasks:", copiedTasks)
+		console.log("tasks:", copiedTasks)
 		const [removed] = copiedTasks.splice(source.index, 1)
 		// console.log("Index:", source.index, " Removed:", removed)
 		copiedTasks.splice(destination.index, 0, removed)
 		// console.log("copied:", copiedTasks, "og:", [...list.tasks])
 		let newLists = lists.map((li) => {
 			if (parseInt(li.id) === parseInt(list.id)) {
-				console.log(li)
+				//console.log('Li:',li.tasks)
 				li.tasks = copiedTasks
 			}
 			return li
@@ -141,15 +145,6 @@ function Board() {
 		// console.log("og lists: ", lists, "replaced:", replacedLists)
 		setLists((lists) => (lists = [...newLists]))
 	}
-
-	//if not member yet, join table
-	if (!currentMember?.id)
-		return (
-			<div>
-				<p>Not a member</p>
-				<button onClick={handleJoinBoard}>Join Board</button>
-			</div>
-		)
 
 	return (
 		<>
