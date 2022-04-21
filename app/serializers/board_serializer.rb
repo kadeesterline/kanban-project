@@ -1,11 +1,18 @@
 class BoardSerializer < ActiveModel::Serializer
 	attributes :id, :name
-	attributes :users_membership, :board_admin
+	attributes :users_membership, :board_admin, :members
 
-	has_many :members
+	# has_many :members
 	has_many :users, through: :members
 	has_many :lists
-	has_many :tasks, through: :lists
+	# has_many :tasks, through: :lists
+
+	# def tasks
+	# 	puts "#{object.lists.all}"
+	# end
+	def members
+		object.members.map { |m| m&.user&.username }
+	end
 
 	def users_membership
 		object.members.find_by(user_id: instance_options[:user_id])

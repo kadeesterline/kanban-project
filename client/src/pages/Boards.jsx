@@ -58,9 +58,9 @@ function Boards() {
 
 	return (
 		<div>
-			<div className='grid grid-cols-4'>{boardCells}</div>
+			<div className='grid grid-cols-4 '>{boardCells}</div>
 			<button
-				className='rounded-full bg-green-200 m-2 p-1'
+				className='rounded-full bg-blue-200 m-2 p-2 hover:bg-blue-300'
 				onClick={handleShowAddBoard}
 			>
 				{" "}

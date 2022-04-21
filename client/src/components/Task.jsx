@@ -10,7 +10,7 @@ function Task({ tasks, setTasks, task }) {
 	}
 
 	return (
-		<div className='bg-white border border-solid'>
+		<div className='bg-white border border-solid m-2'>
 			{task.title}&nbsp;
 			<button
 				onClick={handleShowEditTask}
@@ -27,6 +27,7 @@ function Task({ tasks, setTasks, task }) {
 					setShowEditTask={setShowEditTask}
 				/>
 			) : null}
+			<div>{task.rank}</div>
 		</div>
 	)
 }

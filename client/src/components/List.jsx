@@ -10,7 +10,7 @@ function List({ lists, setLists, list, currentMember }) {
 	const [isAddTask, setIsAddTask] = useState(false)
 	const [newTaskTitle, setNewTaskTitle] = useState("")
 	const [showEditList, setShowEditList] = useState(false)
-	const [listState, setListState] = useState([])
+	const [listName, setListName] = useState("")
 	const currentUser = useUser()
 
 	let initialUpdateListFormState = {
@@ -22,11 +22,12 @@ function List({ lists, setLists, list, currentMember }) {
 	)
 
 	useEffect(() => {
+		setListName(list.name)
 		console.log(list)
-		let tasks = list?.tasks?.sort((a, b) => a.rank?.localeCompare(b.rank))
-		setTasks(tasks)
-		setListState(list)
-	}, [lists, list])
+		// let t = list?.tasks?.sort((a, b ) => a.rank?.localeCompare(b.rank))
+		// console.log('t:',t)
+		setTasks(list.tasks)
+	}, [lists])
 
 	function handleDeleteList() {
 		fetch(`/lists/${list.id}`, {
@@ -47,7 +48,15 @@ function List({ lists, setLists, list, currentMember }) {
 			body: JSON.stringify(updateListFormState),
 		})
 			.then((r) => r.json())
-			.then(setListState(updateListFormState))
+			.then((newList) => {
+				let updatedLists = lists.map((li) => {
+					if (parseInt(li.id) === parseInt(list.id)) {
+						li = newList
+					}
+					return li
+				})
+				setLists(updatedLists)
+			})
 	}
 
 	function handleAddTask(task) {
@@ -60,10 +69,16 @@ function List({ lists, setLists, list, currentMember }) {
 			body: JSON.stringify({ ...task }),
 		})
 			.then((r) => r.json())
-			.then((task) => {
-				console.log(task)
+			.then((newTask) => {
+				console.log(newTask)
 				setNewTaskTitle("")
-				setTasks([...tasks, task])
+				let listsWithNewTask = lists.map((li) => {
+					if (parseInt(li.id) === parseInt(list.id)) {
+						li.tasks = [...li.tasks, newTask]
+					}
+					return li
+				})
+				setLists(listsWithNewTask)
 				setIsAddTask((isAddTask) => !isAddTask)
 			})
 	}
@@ -83,9 +98,9 @@ function List({ lists, setLists, list, currentMember }) {
 		setShowEditList(!showEditList)
 	}
 	return (
-		<div className='border border-solid rounded-lg shadow-lg w-80 mx-2'>
-			<div className='bg-slate-200'>
-				<h1 className='font-bold text-xl'>{listState.name}</h1>
+		<div className='h-full'>
+			<div className='border border-solid rounded-lg w-80 mx-2 '>
+				<h1 className='text-l bg-slate-200 p-2'>{listName}</h1>
 				{tasks?.map((task, index) => {
 					return (
 						<Draggable
@@ -100,7 +115,7 @@ function List({ lists, setLists, list, currentMember }) {
 										{...provided.draggableProps}
 										{...provided.dragHandleProps}
 										style={{
-											backgroundColor: snapshot.isDragging ? "#263b4A" : "",
+											backgroundColor: snapshot.isDragging ? "#" : "",
 											...provided.draggableProps.style,
 										}}
 									>

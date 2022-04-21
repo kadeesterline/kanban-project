@@ -174,14 +174,14 @@ function Board() {
 				" dest index: ",
 				destination.index
 			)
-			let newLists = await handleMoveTask(result.draggableId, destination.index)
-			console.log(newLists)
-			// let newLists = lists.map((li) => {
-			// 	if (parseInt(li.id) === parseInt(list.id)) {
-			// 		li.tasks = copiedTasks
-			// 	}
-			// 	return li
-			// })
+			// let newLists = await handleMoveTask(result.draggableId, destination.index)
+			// console.log("List from moving tasks:", newLists)
+			let newLists = lists.map((li) => {
+				if (parseInt(li.id) === parseInt(list.id)) {
+					li.tasks = copiedTasks
+				}
+				return li
+			})
 			setLists(newLists)
 		}
 	}
@@ -195,9 +195,23 @@ function Board() {
 				</div>
 			) : (
 				<div className='h-full'>
-					<h1 className='text-xl'>{board.name}</h1>
-					<br />
-					<br />
+					<div className='p-8'>
+						<h1 className='text-xl font-bold mb-3'>{board.name}</h1>
+						{boardAdmin && (
+							<p className='font-mono text-sm text-stone-400'>
+								Admin: {boardAdmin}
+							</p>
+						)}
+						{boardMembers.length > 0 && (
+							<p className='font-mono text-sm text-stone-400'>
+								Members:{" "}
+								{boardMembers.map((m) => (
+									<span>{m} </span>
+								))}
+							</p>
+						)}
+					</div>
+
 					<DragDropContext onDragEnd={(result) => handleDragEnd(result)}>
 						<div className='flex flex-row overflow-x-scroll'>
 							{lists?.map((list) => {
@@ -210,7 +224,7 @@ function Board() {
 													{...provided.droppableProps}
 													className={
 														snapshot.isDraggingOver
-															? "bg-blue-300 rounded-xl"
+															? "bg-blue-100 rounded-xl"
 															: ""
 													}
 												>
@@ -228,7 +242,7 @@ function Board() {
 									</Droppable>
 								)
 							})}
-							<div className='rounded-lg shadow-lgw w-80 mx-2'>
+							<div className='rounded-lg shadow-lg mx-2'>
 								<button
 									onClick={handleShowAddList}
 									className='rounded-full bg-green-200 m-2 p-1'

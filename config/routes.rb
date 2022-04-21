@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 	get '/autologin', to: 'users#show'
 	post '/joinboard', to: 'sessions#join_board'
 	post '/boards/:id', to: 'boards#show'
+	patch '/tasks/rank/:id', to: 'tasks#move_task'
 
 	# Routing logic: fallback requests for React Router.
 	# Leave this here to help deploy your app later!
