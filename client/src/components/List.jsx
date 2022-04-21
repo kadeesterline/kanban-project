@@ -65,7 +65,8 @@ function List({ lists, setLists, list, currentMember }) {
 			})
 	}
 
-	function onNewTask() {
+	function onNewTask(event) {
+		event.preventDefault()
 		let task = {
 			title: newTaskTitle,
 			list_id: list.id,
@@ -79,9 +80,9 @@ function List({ lists, setLists, list, currentMember }) {
 		setShowEditList(!showEditList)
 	}
 	return (
-		<div className='border border-solid w-80'>
+		<div className='border border-solid rounded-lg shadow-lg w-80 mx-2'>
 			<div className='bg-slate-200'>
-				<h1>{listState.name}</h1>
+				<h1 className='font-bold text-xl'>{listState.name}</h1>
 				{tasks?.map((task, index) => {
 					return (
 						<Draggable
@@ -96,7 +97,7 @@ function List({ lists, setLists, list, currentMember }) {
 										{...provided.draggableProps}
 										{...provided.dragHandleProps}
 										style={{
-											backgroundColor: snapshot.isDraggin ? "#263b4A" : "",
+											backgroundColor: snapshot.isDragging ? "#263b4A" : "",
 											...provided.draggableProps.style,
 										}}
 									>

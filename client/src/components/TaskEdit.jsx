@@ -53,6 +53,12 @@ function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 		setShowEditTask(false)
 	}
 
+	// let date = task?.due_date
+	// console.log(date)
+
+	//  let formattedDate = `${(date?.getMonth() + 1)}/${date?.getDate()}/${date?.getFullYear()}`
+	// console.log(formattedDate)
+
 	return (
 		<div className='justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none'>
 			<div className='relative w-auto my-6 mx-auto max-w-3xl'>
@@ -126,7 +132,9 @@ function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 
 						<label className='font-bold'>
 							{" "}
-							Due Date: <span>{task.due_date}</span>{" "}
+							Due Date: <span className='font-normal'>
+								{/*formattedDate*/}
+							</span>{" "}
 						</label>
 						<input
 							type='date'
