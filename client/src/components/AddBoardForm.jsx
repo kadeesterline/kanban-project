@@ -11,6 +11,7 @@ function AddBoardForm({
 	}
 
 	function handleSubmit(event) {
+		event.preventDefault()
 		handleAddBoard()
 	}
 	return (

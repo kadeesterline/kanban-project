@@ -14,6 +14,7 @@ function Boards() {
 
 	let initialAddBoardFormState = {
 		name: "",
+		user_id: currentUser.id,
 	}
 
 	const [addBoardFormState, setAddBoardFormState] = useState(
@@ -45,6 +46,8 @@ function Boards() {
 			},
 			body: JSON.stringify(addBoardFormState),
 		})
+			.then((r) => r.json())
+			.then((newBoard) => setBoards([...boards, newBoard]))
 	}
 
 	const boardCells =

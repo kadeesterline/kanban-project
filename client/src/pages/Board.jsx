@@ -4,15 +4,13 @@ import { useParams, useNavigate } from "react-router-dom"
 import UpdateBoardForm from "../components/UpdateBoardForm"
 import AddListForm from "../components/AddListForm"
 import List from "../components/List"
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
-import { useMember } from "../context/MemberContext"
+import { DragDropContext, Droppable } from "react-beautiful-dnd"
 import { useUser } from "../context/UserContext"
 
 function Board() {
 	let navigate = useNavigate()
 	let { id } = useParams() //id of board
 	const currentUser = useUser()
-	const currentMemberArray = useMember()
 
 	const [board, setBoard] = useState([])
 	const [lists, setLists] = useState([])
@@ -31,7 +29,6 @@ function Board() {
 	})
 
 	useEffect(() => {
-		console.log("trigger useffect")
 		if (currentUser.id) {
 			fetch(`/boards/${id}`, {
 				method: "POST",
@@ -42,7 +39,6 @@ function Board() {
 			})
 				.then((r) => r.json())
 				.then((board) => {
-					console.log(board)
 					setBoard(board)
 					setLists(board.lists)
 					setCurrentMember(board.users_membership)
@@ -50,12 +46,16 @@ function Board() {
 					setBoardMembers(board.members)
 				})
 		}
-	}, [currentUser])
+	}, [currentUser, id])
 
 	function handleDeleteBoard() {
 		fetch(`/boards/${id}`, {
 			method: "DELETE",
-		}).then(navigate("/boards"))
+		}).then((r) => {
+			if (r.ok) {
+				navigate("/boards")
+			}
+		})
 	}
 
 	function handleUpdateBoard() {
@@ -68,9 +68,11 @@ function Board() {
 			body: JSON.stringify(updateFormState),
 		})
 			.then((r) => r.json())
-			.then((updatedBoard) => setBoard(updatedBoard))
-			.then(setUpdateFormState({ name: "", board_id: parseInt(id) }))
-			.then(setShowUpdateBoard(false))
+			.then((updatedBoard) => {
+				setBoard(updatedBoard)
+				setUpdateFormState({ name: "", board_id: parseInt(id) })
+				setShowUpdateBoard(false)
+			})
 	}
 
 	function handleAddList() {
@@ -116,34 +118,72 @@ function Board() {
 			.then((member) => setCurrentMember(member))
 	}
 
-	function handleDragEnd(result, lists, setLists) {
+	async function handleMoveTask(id, index) {
+		const res = await fetch(`/tasks/rank/${id}`, {
+			method: "PATCH",
+			headers: {
+				"content-type": "application/JSON",
+				accept: "application/JSON",
+			},
+			body: JSON.stringify({ dest_index: index }),
+		})
+		const json = await res.json()
+		return json
+		// .then(console.log)
+	}
+
+	async function handleDragEnd(result) {
 		//result variable is an object that has a destination and a source
-		//console.log('results:', result)
+		console.log("results:", result)
 		if (!result.destination) return
 		const { source, destination } = result
-		//lists variable is the lists that belong to the board
-		//console.log("lists:", lists)
-		//list variable is the list that is the parent of the moving task
-		const list = lists.find(
-			(l) => parseInt(source.droppableId) === parseInt(l.id)
-		)
-		//console.log("list:", list)
-		//copiedTasks is the tasks in the correct order
-		const copiedTasks = [...list.tasks]
-		console.log("tasks:", copiedTasks)
-		const [removed] = copiedTasks.splice(source.index, 1)
-		// console.log("Index:", source.index, " Removed:", removed)
-		copiedTasks.splice(destination.index, 0, removed)
-		// console.log("copied:", copiedTasks, "og:", [...list.tasks])
-		let newLists = lists.map((li) => {
-			if (parseInt(li.id) === parseInt(list.id)) {
-				//console.log('Li:',li.tasks)
-				li.tasks = copiedTasks
-			}
-			return li
-		})
-		// console.log("og lists: ", lists, "replaced:", replacedLists)
-		setLists((lists) => (lists = [...newLists]))
+
+		if (source.droppableId !== destination.droppableId) {
+			const sourceList = lists.find(
+				(l) => parseInt(source.droppableId) === parseInt(l.id)
+			)
+			const destList = lists.find(
+				(l) => parseInt(destination.droppableId) === parseInt(l.id)
+			)
+			const sourceTasks = [...sourceList.tasks]
+			const destTasks = [...destList.tasks]
+			const [removed] = sourceTasks.splice(source.index, 1)
+			destTasks.splice(destination.index, 0, removed)
+			//fetches, using index
+			let newList = lists.map((li) => {
+				if (parseInt(li.id) === parseInt(sourceList.id)) {
+					li.tasks = sourceTasks
+				}
+				if (parseInt(li.id) === parseInt(destList.id)) {
+					li.tasks = destTasks
+				}
+				return li
+			})
+			setLists(newList)
+		} else {
+			const list = lists.find(
+				(l) => parseInt(source.droppableId) === parseInt(l.id)
+			)
+
+			const copiedTasks = [...list.tasks]
+			const [removed] = copiedTasks.splice(source.index, 1)
+			copiedTasks.splice(destination.index, 0, removed)
+			console.log(
+				"taskId:",
+				result.draggableId,
+				" dest index: ",
+				destination.index
+			)
+			let newLists = await handleMoveTask(result.draggableId, destination.index)
+			console.log(newLists)
+			// let newLists = lists.map((li) => {
+			// 	if (parseInt(li.id) === parseInt(list.id)) {
+			// 		li.tasks = copiedTasks
+			// 	}
+			// 	return li
+			// })
+			setLists(newLists)
+		}
 	}
 
 	return (
@@ -158,9 +198,7 @@ function Board() {
 					<h1 className='text-xl'>{board.name}</h1>
 					<br />
 					<br />
-					<DragDropContext
-						onDragEnd={(result) => handleDragEnd(result, lists, setLists)}
-					>
+					<DragDropContext onDragEnd={(result) => handleDragEnd(result)}>
 						<div className='flex flex-row overflow-x-scroll'>
 							{lists?.map((list) => {
 								return (
@@ -170,11 +208,11 @@ function Board() {
 												<div
 													ref={provided.innerRef}
 													{...provided.droppableProps}
-													style={{
-														background: snapshot.isDraggingOver
-															? "lightblue"
-															: "",
-													}}
+													className={
+														snapshot.isDraggingOver
+															? "bg-blue-300 rounded-xl"
+															: ""
+													}
 												>
 													<List
 														list={list}
@@ -190,47 +228,49 @@ function Board() {
 									</Droppable>
 								)
 							})}
+							<div className='rounded-lg shadow-lgw w-80 mx-2'>
+								<button
+									onClick={handleShowAddList}
+									className='rounded-full bg-green-200 m-2 p-1'
+								>
+									{" "}
+									Add List{" "}
+								</button>
+								<br />
+								{showAddListForm ? (
+									<AddListForm
+										addListFormState={addListFormState}
+										setAddListFormState={setAddListFormState}
+										handleAddList={handleAddList}
+									/>
+								) : null}
+								<br />
+								<button
+									onClick={handleDeleteBoard}
+									className='rounded-full bg-red-200 m-2 p-1'
+								>
+									{" "}
+									Delete Board{" "}
+								</button>
+								<br />
+								<button
+									onClick={handleShowEditBoard}
+									className='rounded-full bg-yellow-200 m-2 p-1'
+								>
+									{" "}
+									Update Board{" "}
+								</button>
+								<br />
+								{showUpdateBoard ? (
+									<UpdateBoardForm
+										updateFormState={updateFormState}
+										setUpdateFormState={setUpdateFormState}
+										handleUpdateBoard={handleUpdateBoard}
+									/>
+								) : null}
+							</div>
 						</div>
 						<br />
-						<button
-							onClick={handleShowAddList}
-							className='rounded-full bg-green-200 m-2 p-1'
-						>
-							{" "}
-							Add List{" "}
-						</button>
-						<br />
-						{showAddListForm ? (
-							<AddListForm
-								addListFormState={addListFormState}
-								setAddListFormState={setAddListFormState}
-								handleAddList={handleAddList}
-							/>
-						) : null}
-						<br />
-						<button
-							onClick={handleDeleteBoard}
-							className='rounded-full bg-red-200 m-2 p-1'
-						>
-							{" "}
-							Delete Board{" "}
-						</button>
-						<br />
-						<button
-							onClick={handleShowEditBoard}
-							className='rounded-full bg-yellow-200 m-2 p-1'
-						>
-							{" "}
-							Update Board{" "}
-						</button>
-						<br />
-						{showUpdateBoard ? (
-							<UpdateBoardForm
-								updateFormState={updateFormState}
-								setUpdateFormState={setUpdateFormState}
-								handleUpdateBoard={handleUpdateBoard}
-							/>
-						) : null}
 					</DragDropContext>
 				</div>
 			)}

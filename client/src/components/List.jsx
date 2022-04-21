@@ -22,9 +22,11 @@ function List({ lists, setLists, list, currentMember }) {
 	)
 
 	useEffect(() => {
-		setTasks(list?.tasks)
+		console.log(list)
+		let tasks = list?.tasks?.sort((a, b) => a.rank?.localeCompare(b.rank))
+		setTasks(tasks)
 		setListState(list)
-	}, [list])
+	}, [lists, list])
 
 	function handleDeleteList() {
 		fetch(`/lists/${list.id}`, {
@@ -59,6 +61,7 @@ function List({ lists, setLists, list, currentMember }) {
 		})
 			.then((r) => r.json())
 			.then((task) => {
+				console.log(task)
 				setNewTaskTitle("")
 				setTasks([...tasks, task])
 				setIsAddTask((isAddTask) => !isAddTask)
@@ -127,34 +130,37 @@ function List({ lists, setLists, list, currentMember }) {
 				) : (
 					<div></div>
 				)}
+				<div>
+					<button
+						className='rounded-full bg-green-200 m-2 p-1'
+						onClick={() => setIsAddTask((isAddTask) => !isAddTask)}
+					>
+						{isAddTask ? "Cancel" : "Add Task"}
+					</button>
+					&nbsp;
+					<button
+						className='rounded-full bg-red-200 m-2 p-1'
+						onClick={handleDeleteList}
+					>
+						Delete List
+					</button>
+					&nbsp;
+					<button
+						className='rounded-full bg-yellow-200 m-2 p-1'
+						onClick={handleShowEditList}
+					>
+						Update List
+					</button>
+				</div>
+
+				{showEditList ? (
+					<UpdateListForm
+						updateListFormState={updateListFormState}
+						setUpdateListFormState={setUpdateListFormState}
+						handleUpdateList={handleUpdateList}
+					/>
+				) : null}
 			</div>
-			<button
-				className='rounded-full bg-green-200 m-2 p-1'
-				onClick={() => setIsAddTask((isAddTask) => !isAddTask)}
-			>
-				{isAddTask ? "Cancel" : "Add Task"}
-			</button>
-			&nbsp;
-			<button
-				className='rounded-full bg-red-200 m-2 p-1'
-				onClick={handleDeleteList}
-			>
-				Delete List
-			</button>
-			&nbsp;
-			<button
-				className='rounded-full bg-yellow-200 m-2 p-1'
-				onClick={handleShowEditList}
-			>
-				Update List
-			</button>
-			{showEditList ? (
-				<UpdateListForm
-					updateListFormState={updateListFormState}
-					setUpdateListFormState={setUpdateListFormState}
-					handleUpdateList={handleUpdateList}
-				/>
-			) : null}
 		</div>
 	)
 }
