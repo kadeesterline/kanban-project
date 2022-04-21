@@ -15,9 +15,9 @@ function UpdateBoardForm({
 		handleUpdateBoard()
 	}
 	return (
-		<div className='bg-slate-200 w-40'>
+		<div className='bg-white border border-solid  w-80'>
 			<form onSubmit={handleSubmit} autoComplete='false'>
-				<label>name</label>
+				<label className='font-bold'>name:</label>{" "}
 				<input
 					type='text'
 					placeholder='enter new name'

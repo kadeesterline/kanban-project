@@ -38,7 +38,7 @@ function Board() {
 				})
 			})
 			setCurrentMember(member)
-			console.log("currentMember: ", currentMember)
+			//console.log("currentMember: ", currentMember)
 		}
 	}, [currentMember, boardMembers, currentMemberArray])
 
@@ -120,23 +120,27 @@ function Board() {
 	}
 
 	function handleDragEnd(result, lists, setLists) {
-		console.log(result)
+		//result variable is an object that has a destination and a source
+		//console.log('results:', result)
 		if (!result.destination) return
 		const { source, destination } = result
-		// console.log("lists:", lists)
+		//lists variable is the lists that belong to the board
+		//console.log("lists:", lists)
+		//list variable is the list that is the parent of the moving task
 		const list = lists.find(
 			(l) => parseInt(source.droppableId) === parseInt(l.id)
 		)
-		// console.log("list:", list)
+		//console.log("list:", list)
+		//copiedTasks is the tasks in the correct order
 		const copiedTasks = [...list.tasks]
-		// console.log("tasks:", copiedTasks)
+		console.log("tasks:", copiedTasks)
 		const [removed] = copiedTasks.splice(source.index, 1)
 		// console.log("Index:", source.index, " Removed:", removed)
 		copiedTasks.splice(destination.index, 0, removed)
 		// console.log("copied:", copiedTasks, "og:", [...list.tasks])
 		let newLists = lists.map((li) => {
 			if (parseInt(li.id) === parseInt(list.id)) {
-				console.log(li)
+				//console.log('Li:',li.tasks)
 				li.tasks = copiedTasks
 			}
 			return li
@@ -156,7 +160,7 @@ function Board() {
 
 	return (
 		<div className='h-full'>
-			<h1 className='text-xl'>{board.name}</h1>
+			<h1 className='font-bold text-4xl'>{board.name}</h1>
 			<br />
 			<br />
 			<DragDropContext
@@ -180,7 +184,6 @@ function Board() {
 												lists={lists}
 												setLists={setLists}
 												currentMember={currentMember}
-												className=''
 											/>
 											{provided.placeholder}
 										</div>
@@ -189,47 +192,48 @@ function Board() {
 							</Droppable>
 						)
 					})}
+					<div className='border border-solid rounded-lg shadow-lg w-80 mx-2'>
+						<button
+							onClick={handleShowAddList}
+							className='rounded-full bg-green-200 m-2 p-1'
+						>
+							{" "}
+							Add List{" "}
+						</button>
+						<br />
+						{showAddListForm ? (
+							<AddListForm
+								addListFormState={addListFormState}
+								setAddListFormState={setAddListFormState}
+								handleAddList={handleAddList}
+							/>
+						) : null}
+						<br />
+						<button
+							onClick={handleDeleteBoard}
+							className='rounded-full bg-red-200 m-2 p-1'
+						>
+							{" "}
+							Delete Board{" "}
+						</button>
+						<br />
+						<button
+							onClick={handleShowEditBoard}
+							className='rounded-full bg-yellow-200 m-2 p-1'
+						>
+							{" "}
+							Update Board{" "}
+						</button>
+						<br />
+						{showUpdateBoard ? (
+							<UpdateBoardForm
+								updateFormState={updateFormState}
+								setUpdateFormState={setUpdateFormState}
+								handleUpdateBoard={handleUpdateBoard}
+							/>
+						) : null}
+					</div>
 				</div>
-				<br />
-				<button
-					onClick={handleShowAddList}
-					className='rounded-full bg-green-200 m-2 p-1'
-				>
-					{" "}
-					Add List{" "}
-				</button>
-				<br />
-				{showAddListForm ? (
-					<AddListForm
-						addListFormState={addListFormState}
-						setAddListFormState={setAddListFormState}
-						handleAddList={handleAddList}
-					/>
-				) : null}
-				<br />
-				<button
-					onClick={handleDeleteBoard}
-					className='rounded-full bg-red-200 m-2 p-1'
-				>
-					{" "}
-					Delete Board{" "}
-				</button>
-				<br />
-				<button
-					onClick={handleShowEditBoard}
-					className='rounded-full bg-yellow-200 m-2 p-1'
-				>
-					{" "}
-					Update Board{" "}
-				</button>
-				<br />
-				{showUpdateBoard ? (
-					<UpdateBoardForm
-						updateFormState={updateFormState}
-						setUpdateFormState={setUpdateFormState}
-						handleUpdateBoard={handleUpdateBoard}
-					/>
-				) : null}
 			</DragDropContext>
 		</div>
 	)

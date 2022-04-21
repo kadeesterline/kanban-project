@@ -16,8 +16,10 @@ function Home() {
 
 	return (
 		<div>
-			<h1>KanBan</h1>
-			<Link to='/login'>Get Started</Link>
+			<h1 className='font-bold text-7xl'>KanBan</h1>
+			<Link to='/login' className='rounded-full bg-blue-200 m-2 p-1'>
+				Get Started
+			</Link>
 		</div>
 	)
 }
