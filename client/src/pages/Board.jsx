@@ -16,8 +16,9 @@ function Board() {
 
 	const [board, setBoard] = useState([])
 	const [lists, setLists] = useState([])
-	const [boardMembers, setBoardMembers] = useState([])
 	const [currentMember, setCurrentMember] = useState({})
+	const [boardMembers, setBoardMembers] = useState([])
+	const [boardAdmin, setBoardAdmin] = useState("")
 	const [showUpdateBoard, setShowUpdateBoard] = useState(false)
 	const [showAddListForm, setShowAddListForm] = useState(false)
 	const [updateFormState, setUpdateFormState] = useState({
@@ -29,34 +30,27 @@ function Board() {
 		board_id: parseInt(id),
 	})
 
-	//sets the current member of the board
-	useEffect(() => {
-		if (boardMembers?.length > 0 && currentMemberArray?.length > 0) {
-			let member = boardMembers.find((bMember) => {
-				return currentMemberArray.filter((member) => {
-					return member.id === bMember.id
-				})
-			})
-			setCurrentMember(member)
-			console.log("currentMember: ", currentMember)
-		}
-	}, [currentMember, boardMembers, currentMemberArray])
-
 	useEffect(() => {
 		console.log("trigger useffect")
-		fetch(`/boards/${id}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-			.then((r) => r.json())
-			.then((board) => {
-				setBoard(board)
-				setLists(board.lists)
-				setBoardMembers(board.members)
+		if (currentUser.id) {
+			fetch(`/boards/${id}`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ user_id: currentUser.id }),
 			})
-	}, [id])
+				.then((r) => r.json())
+				.then((board) => {
+					console.log(board)
+					setBoard(board)
+					setLists(board.lists)
+					setCurrentMember(board.users_membership)
+					setBoardAdmin(board.board_admin)
+					setBoardMembers(board.members)
+				})
+		}
+	}, [currentUser])
 
 	function handleDeleteBoard() {
 		fetch(`/boards/${id}`, {
@@ -73,7 +67,8 @@ function Board() {
 			},
 			body: JSON.stringify(updateFormState),
 		})
-			.then(setBoard(updateFormState))
+			.then((r) => r.json())
+			.then((updatedBoard) => setBoard(updatedBoard))
 			.then(setUpdateFormState({ name: "", board_id: parseInt(id) }))
 			.then(setShowUpdateBoard(false))
 	}
@@ -88,8 +83,10 @@ function Board() {
 			body: JSON.stringify(addListFormState),
 		})
 			.then((r) => r.json())
-			.then((list) => setLists([...lists, list]))
-			.then(setAddListFormState({ name: "", board_id: parseInt(id) }))
+			.then((list) => {
+				setLists([...lists, list])
+				setAddListFormState({ name: "", board_id: parseInt(id) })
+			})
 	}
 
 	function handleShowAddList() {
@@ -146,7 +143,7 @@ function Board() {
 	}
 
 	//if not member yet, join table
-	if (!currentMember.id)
+	if (!currentMember?.id)
 		return (
 			<div>
 				<p>Not a member</p>
@@ -155,83 +152,94 @@ function Board() {
 		)
 
 	return (
-		<div className='h-full'>
-			<h1 className='text-xl'>{board.name}</h1>
-			<br />
-			<br />
-			<DragDropContext
-				onDragEnd={(result) => handleDragEnd(result, lists, setLists)}
-			>
-				<div className='flex flex-row overflow-x-scroll'>
-					{lists?.map((list) => {
-						return (
-							<Droppable key={list.id} droppableId={list.id?.toString()}>
-								{(provided, snapshot) => {
-									return (
-										<div
-											ref={provided.innerRef}
-											{...provided.droppableProps}
-											style={{
-												background: snapshot.isDraggingOver ? "lightblue" : "",
-											}}
-										>
-											<List
-												list={list}
-												lists={lists}
-												setLists={setLists}
-												currentMember={currentMember}
-												className=''
-											/>
-											{provided.placeholder}
-										</div>
-									)
-								}}
-							</Droppable>
-						)
-					})}
+		<>
+			{!currentMember.id ? (
+				<div>
+					<p>Not a member</p>
+					<button onClick={handleJoinBoard}>Join Board</button>
 				</div>
-				<br />
-				<button
-					onClick={handleShowAddList}
-					className='rounded-full bg-green-200 m-2 p-1'
-				>
-					{" "}
-					Add List{" "}
-				</button>
-				<br />
-				{showAddListForm ? (
-					<AddListForm
-						addListFormState={addListFormState}
-						setAddListFormState={setAddListFormState}
-						handleAddList={handleAddList}
-					/>
-				) : null}
-				<br />
-				<button
-					onClick={handleDeleteBoard}
-					className='rounded-full bg-red-200 m-2 p-1'
-				>
-					{" "}
-					Delete Board{" "}
-				</button>
-				<br />
-				<button
-					onClick={handleShowEditBoard}
-					className='rounded-full bg-yellow-200 m-2 p-1'
-				>
-					{" "}
-					Update Board{" "}
-				</button>
-				<br />
-				{showUpdateBoard ? (
-					<UpdateBoardForm
-						updateFormState={updateFormState}
-						setUpdateFormState={setUpdateFormState}
-						handleUpdateBoard={handleUpdateBoard}
-					/>
-				) : null}
-			</DragDropContext>
-		</div>
+			) : (
+				<div className='h-full'>
+					<h1 className='text-xl'>{board.name}</h1>
+					<br />
+					<br />
+					<DragDropContext
+						onDragEnd={(result) => handleDragEnd(result, lists, setLists)}
+					>
+						<div className='flex flex-row overflow-x-scroll'>
+							{lists?.map((list) => {
+								return (
+									<Droppable key={list.id} droppableId={list.id?.toString()}>
+										{(provided, snapshot) => {
+											return (
+												<div
+													ref={provided.innerRef}
+													{...provided.droppableProps}
+													style={{
+														background: snapshot.isDraggingOver
+															? "lightblue"
+															: "",
+													}}
+												>
+													<List
+														list={list}
+														lists={lists}
+														setLists={setLists}
+														currentMember={currentMember}
+														className=''
+													/>
+													{provided.placeholder}
+												</div>
+											)
+										}}
+									</Droppable>
+								)
+							})}
+						</div>
+						<br />
+						<button
+							onClick={handleShowAddList}
+							className='rounded-full bg-green-200 m-2 p-1'
+						>
+							{" "}
+							Add List{" "}
+						</button>
+						<br />
+						{showAddListForm ? (
+							<AddListForm
+								addListFormState={addListFormState}
+								setAddListFormState={setAddListFormState}
+								handleAddList={handleAddList}
+							/>
+						) : null}
+						<br />
+						<button
+							onClick={handleDeleteBoard}
+							className='rounded-full bg-red-200 m-2 p-1'
+						>
+							{" "}
+							Delete Board{" "}
+						</button>
+						<br />
+						<button
+							onClick={handleShowEditBoard}
+							className='rounded-full bg-yellow-200 m-2 p-1'
+						>
+							{" "}
+							Update Board{" "}
+						</button>
+						<br />
+						{showUpdateBoard ? (
+							<UpdateBoardForm
+								updateFormState={updateFormState}
+								setUpdateFormState={setUpdateFormState}
+								handleUpdateBoard={handleUpdateBoard}
+							/>
+						) : null}
+					</DragDropContext>
+				</div>
+			)}
+		</>
 	)
 }
 
