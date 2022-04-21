@@ -6,10 +6,12 @@ import AddListForm from "../components/AddListForm"
 import List from "../components/List"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import { useMember } from "../context/MemberContext"
+import { useUser } from "../context/UserContext"
 
 function Board() {
 	let navigate = useNavigate()
 	let { id } = useParams() //id of board
+	const currentUser = useUser()
 	const currentMemberArray = useMember()
 
 	const [board, setBoard] = useState([])
@@ -18,28 +20,30 @@ function Board() {
 	const [currentMember, setCurrentMember] = useState({})
 	const [showUpdateBoard, setShowUpdateBoard] = useState(false)
 	const [showAddListForm, setShowAddListForm] = useState(false)
-
-	let initialUpdateFormState = { name: "",}
-	const [updateFormState, setUpdateFormState] = useState(initialUpdateFormState)
-	const [addListFormState, setAddListFormState] = useState(
-		initialUpdateFormState
-	)
+	const [updateFormState, setUpdateFormState] = useState({
+		name: "",
+		board_id: parseInt(id),
+	})
+	const [addListFormState, setAddListFormState] = useState({
+		name: "",
+		board_id: parseInt(id),
+	})
 
 	//sets the current member of the board
 	useEffect(() => {
 		if (boardMembers.length > 0 && currentMemberArray.length > 0) {
-				let member = boardMembers.find((bMember) => {
-					return currentMemberArray.filter((member) => {
-						return member.id === bMember.id
-					})
+			let member = boardMembers.find((bMember) => {
+				return currentMemberArray.filter((member) => {
+					return member.id === bMember.id
 				})
-				setCurrentMember(member)
+			})
+			setCurrentMember(member)
 			console.log("currentMember: ", currentMember)
 		}
-
 	}, [currentMember, boardMembers, currentMemberArray])
 
 	useEffect(() => {
+		console.log("trigger useffect")
 		fetch(`/boards/${id}`, {
 			method: "GET",
 			headers: {
@@ -69,6 +73,9 @@ function Board() {
 			},
 			body: JSON.stringify(updateFormState),
 		})
+			.then(setBoard(updateFormState))
+			.then(setUpdateFormState({ name: "", board_id: parseInt(id) }))
+			.then(setShowUpdateBoard(false))
 	}
 
 	function handleAddList() {
@@ -80,6 +87,9 @@ function Board() {
 			},
 			body: JSON.stringify(addListFormState),
 		})
+			.then((r) => r.json())
+			.then((list) => setLists([...lists, list]))
+			.then(setAddListFormState({ name: "", board_id: parseInt(id) }))
 	}
 
 	function handleShowAddList() {
@@ -90,32 +100,79 @@ function Board() {
 		setShowUpdateBoard(!showUpdateBoard)
 	}
 
+	function handleJoinBoard() {
+		const newMember = {
+			board_id: id,
+			user_id: currentUser.id,
+			isAdmin: false,
+		}
+
+		fetch("/members", {
+			method: "POST",
+			headers: {
+				"content-type": "application/JSON",
+				accept: "application/JSON",
+			},
+			body: JSON.stringify(newMember),
+		})
+			.then((r) => r.json())
+			.then((member) => setCurrentMember(member))
+	}
+
 	function handleDragEnd(result, lists, setLists) {
 		console.log(result)
 		if (!result.destination) return
 		const { source, destination } = result
-		const list = lists[source.droppableId]
+		// console.log("lists:", lists)
+		const list = lists.find(
+			(l) => parseInt(source.droppableId) === parseInt(l.id)
+		)
+		// console.log("list:", list)
+		const copiedTasks = [...list.tasks]
+		// console.log("tasks:", copiedTasks)
+		const [removed] = copiedTasks.splice(source.index, 1)
+		// console.log("Index:", source.index, " Removed:", removed)
+		copiedTasks.splice(destination.index, 0, removed)
+		// console.log("copied:", copiedTasks, "og:", [...list.tasks])
+		let newLists = lists.map((li) => {
+			if (parseInt(li.id) === parseInt(list.id)) {
+				console.log(li)
+				li.tasks = copiedTasks
+			}
+			return li
+		})
+		// console.log("og lists: ", lists, "replaced:", replacedLists)
+		setLists((lists) => (lists = [...newLists]))
 	}
 
+	//if not member yet, join table
+	if (!currentMember.id)
+		return (
+			<div>
+				<p>Not a member</p>
+				<button onClick={handleJoinBoard}>Join Board</button>
+			</div>
+		)
+
 	return (
-		<div className='h-100'>
+		<div className='h-full'>
+			<h1 className='text-xl'>{board.name}</h1>
+			<br />
+			<br />
 			<DragDropContext
 				onDragEnd={(result) => handleDragEnd(result, lists, setLists)}
 			>
-				<h1 className='text-xl'>{board.name}</h1>
-				<br />
-				<br />
-				<div className='grid grid-cols-3'>
+				<div className='flex flex-row overflow-x-scroll'>
 					{lists?.map((list) => {
 						return (
-							<Droppable key={list.id} droppableId={list.id.toString()}>
+							<Droppable key={list.id} droppableId={list.id?.toString()}>
 								{(provided, snapshot) => {
 									return (
 										<div
 											ref={provided.innerRef}
 											{...provided.droppableProps}
 											style={{
-												background: snapshot.isDragginOver ? "lightblue" : "",
+												background: snapshot.isDraggingOver ? "lightblue" : "",
 											}}
 										>
 											<List
@@ -123,6 +180,7 @@ function Board() {
 												lists={lists}
 												setLists={setLists}
 												currentMember={currentMember}
+												className=''
 											/>
 											{provided.placeholder}
 										</div>

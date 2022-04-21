@@ -20,7 +20,12 @@ function Task({ tasks, setTasks, task }) {
 				Update Task{" "}
 			</button>
 			{showEditTask ? (
-				<TaskEdit task={task} tasks={tasks} setTasks={setTasks} setShowEditTask={setShowEditTask}/>
+				<TaskEdit
+					task={task}
+					tasks={tasks}
+					setTasks={setTasks}
+					setShowEditTask={setShowEditTask}
+				/>
 			) : null}
 		</div>
 	)

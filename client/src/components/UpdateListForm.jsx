@@ -11,13 +11,14 @@ function UpdateListForm({
 	}
 
 	function handleSubmit(event) {
-		
+		event.preventDefault()
 		handleUpdateList()
+		setUpdateListFormState({ name: "" })
 	}
 
 	return (
 		<div>
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit} autoComplete='false'>
 				<label>name</label>
 				<input
 					type='text'
@@ -26,7 +27,6 @@ function UpdateListForm({
 					value={updateListFormState.name}
 					onChange={handleChange}
 				/>
-				
 			</form>
 		</div>
 	)

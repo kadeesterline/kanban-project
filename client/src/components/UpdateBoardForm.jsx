@@ -11,11 +11,12 @@ function UpdateBoardForm({
 	}
 
 	function handleSubmit(event) {
+		event.preventDefault()
 		handleUpdateBoard()
 	}
 	return (
 		<div className='bg-slate-200 w-40'>
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit} autoComplete='false'>
 				<label>name</label>
 				<input
 					type='text'
@@ -24,7 +25,10 @@ function UpdateBoardForm({
 					value={updateFormState.name}
 					onChange={handleChange}
 				/>
-				<button className='rounded-full bg-green-200 m-2 p-1' type='submit'> Submit </button>
+				<button className='rounded-full bg-green-200 m-2 p-1' type='submit'>
+					{" "}
+					Submit{" "}
+				</button>
 			</form>
 		</div>
 	)
