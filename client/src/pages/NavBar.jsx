@@ -21,16 +21,14 @@ function NavBar() {
 		"rounded-full bg-blue-200 m-2 px-1 text-sm border-2 border-blue-200"
 
 	return (
-		<div className='bg-yellow-100  p-3'>
+		<div className='flex justify-end bg-amber-100 py-1 border-b-2 border-amber-200 sticky top-0'>
 			<nav className=''>
 				{currentUser.id ? (
 					<>
-						<span>Signed in as {currentUser.username}</span>
-						<Link
-							className='rounded-full bg-blue-200 m-2 p-1 text-sm'
-							onClick={handleLogout}
-							to='/'
-						>
+						<span className='text-sm font-medium'>
+							Signed in as {currentUser.username}
+						</span>
+						<Link className={inactiveClass} onClick={handleLogout} to='/'>
 							Logout
 						</Link>
 					</>
