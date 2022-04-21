@@ -16,44 +16,53 @@ function NavBar() {
 	}
 
 	let activeClass =
-		"rounded-full bg-blue-300 m-2 px-1 text-sm border-2 border-blue-500"
+		"rounded-full bg-blue-300 hover:bg-blue-400 m-3 px-2 py-1/2 text-sm border border-blue-500"
 	let inactiveClass =
-		"rounded-full bg-blue-200 m-2 px-1 text-sm border-2 border-blue-200"
+		"rounded-full bg-blue-200 hover:bg-blue-300 m-3 px-2 py-1/2 text-sm border border-blue-200"
 
 	return (
-		<div className='flex justify-end bg-amber-100 py-1 border-b-2 border-amber-200 sticky top-0'>
-			<nav className=''>
+		<div className=' bg-amber-100 py-1 border-b-2 border-amber-200 sticky top-0'>
+			<nav className='flex justify-between'>
+				<div>
+					<NavLink
+						className={({ isActive }) =>
+							isActive ? activeClass : inactiveClass
+						}
+						to='/'
+					>
+						Home
+					</NavLink>
+					<NavLink
+						className={({ isActive }) =>
+							isActive ? activeClass : inactiveClass
+						}
+						to='/boards'
+					>
+						Boards
+					</NavLink>
+				</div>
+
 				{currentUser.id ? (
-					<>
-						<span className='text-sm font-medium'>
+					<div>
+						<span to='' className='text-sm font-medium'>
 							Signed in as {currentUser.username}
 						</span>
 						<Link className={inactiveClass} onClick={handleLogout} to='/'>
 							Logout
 						</Link>
-					</>
+					</div>
 				) : (
-					<NavLink
-						className={({ isActive }) =>
-							isActive ? activeClass : inactiveClass
-						}
-						to='/login'
-					>
-						Log in
-					</NavLink>
+					<div>
+						<NavLink
+							className={({ isActive }) =>
+								isActive ? activeClass : inactiveClass
+							}
+							to='/login'
+						>
+							Log in
+						</NavLink>
+					</div>
 				)}
-				<NavLink
-					className={({ isActive }) => (isActive ? activeClass : inactiveClass)}
-					to='/boards'
-				>
-					Boards
-				</NavLink>
-				<NavLink
-					className={({ isActive }) => (isActive ? activeClass : inactiveClass)}
-					to='/'
-				>
-					Home
-				</NavLink>
 			</nav>
 		</div>
 	)

@@ -1,5 +1,6 @@
 import React from "react"
 import { useState } from "react"
+import dayjs from "dayjs"
 
 function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 	let editTaskFormInitialState = {
@@ -52,12 +53,6 @@ function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 	function handleHideModal() {
 		setShowEditTask(false)
 	}
-
-	// let date = task?.due_date
-	// console.log(date)
-
-	//  let formattedDate = `${(date?.getMonth() + 1)}/${date?.getDate()}/${date?.getFullYear()}`
-	// console.log(formattedDate)
 
 	return (
 		<div className='justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none'>
@@ -132,8 +127,11 @@ function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 
 						<label className='font-bold'>
 							{" "}
-							Due Date: <span className='font-normal'>
-								{/*formattedDate*/}
+							Due Date:{" "}
+							<span className='font-normal'>
+								{task?.due_date
+									? dayjs(task.due_date).format("MM/DD/YYYY")
+									: "No date"}
 							</span>{" "}
 						</label>
 						<input

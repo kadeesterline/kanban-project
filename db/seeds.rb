@@ -75,8 +75,7 @@ t1 = Task.create(list: l1, user: u1, member: m1, title: 'test title', content: '
 t2 = Task.create(list: l4, user: u2, member: m2, title: 'test title', content: 'test content', priority: 1, rank: 'N')
 t3 = Task.create(list: l8, user: u3, member: m3, title: 'test title', content: 'test content', priority: 1, rank: 'O')
 t4 = Task.create(list: l12, user: u4, member: m4, title: 'test title', content: 'test content', priority: 1, rank: 'P')
-
-t5 = Task.create(list: l1, user: u1, member: m1, title: 'test', content: 'test', priority: 1)
+t5 = Task.create(list: l1, user: u1, member: m1, title: 'test', content: 'test', priority: 1, rank: 'A')
 
 # 20.times do
 # 	Task.new(
