@@ -59,20 +59,26 @@ function Boards() {
 	return (
 		<div>
 			<div className='grid grid-cols-4 '>{boardCells}</div>
-			<button
-				className='rounded-full bg-blue-200 m-2 p-2 hover:bg-blue-300'
-				onClick={handleShowAddBoard}
-			>
-				{" "}
-				Add Board{" "}
-			</button>
-			{showAddBoard ? (
-				<AddBoardForm
-					addBoardFormState={addBoardFormState}
-					setAddBoardFormState={setAddBoardFormState}
-					handleAddBoard={handleAddBoard}
-				/>
-			) : null}
+			<div className='flex items-center justify-center'>
+				<div className='grid grid-rows-1'>
+					<button
+						className='rounded-full bg-blue-200 m-2 p-2 hover:bg-blue-300'
+						onClick={handleShowAddBoard}
+					>
+						{showAddBoard ? "Hide Form" : "Add Board"}
+					</button>
+				</div>
+
+				<div>
+					{showAddBoard ? (
+						<AddBoardForm
+							addBoardFormState={addBoardFormState}
+							setAddBoardFormState={setAddBoardFormState}
+							handleAddBoard={handleAddBoard}
+						/>
+					) : null}
+				</div>
+			</div>
 		</div>
 	)
 }

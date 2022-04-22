@@ -24,7 +24,7 @@ function AddBoardForm({
 					name='name'
 					value={addBoardFormState.name}
 					onChange={handleChange}
-					className='border rounded w-1/5 py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline'
+					className='border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline placeholder:italic placeholder:text-slate-400'
 				/>
 			</form>
 		</div>
