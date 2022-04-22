@@ -5,35 +5,15 @@ import { FiX } from "react-icons/fi"
 
 function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 	let editTaskFormInitialState = {
-		title: "",
-		content: "",
-		priority: 0,
-		due_date: "",
+		title: task.title,
+		content: task.content,
+		priority: task.priority,
+		due_date: task.due_date,
 	}
 
 	const [editTaskFormState, setEditTaskFormState] = useState(
 		editTaskFormInitialState
 	)
-
-	useEffect(() => {
-		console.log(task)
-		setEditTaskFormState({
-			...editTaskFormState,
-			title: task?.title?.toString(),
-		})
-		setEditTaskFormState({
-			...editTaskFormState,
-			content: task?.content?.toString(),
-		})
-		setEditTaskFormState({
-			...editTaskFormState,
-			priority: task?.priority?.toString(),
-		})
-		setEditTaskFormState({
-			...editTaskFormState,
-			due_date: task?.due_date?.toString(),
-		})
-	}, [task])
 
 	const handleFormChange = (event) => {
 		const { name, value } = event.target
@@ -68,6 +48,7 @@ function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 					}
 				})
 				setTasks(updatedTasks)
+				setShowEditTask(false)
 			})
 	}
 
@@ -98,11 +79,7 @@ function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 						</div>
 						<form onSubmit={handleEditTaskSubmit} autoComplete='false'>
 							<div className='grid grid-rows-1 m-2 p-1'>
-								<label className='font-bold'>
-									{" "}
-									Task Title:{" "}
-									<span className='font-normal'> {task.title} </span>{" "}
-								</label>
+								<label className='font-bold'> Task Title: </label>
 								<input
 									autoComplete='xyz123'
 									type='text'
@@ -116,11 +93,7 @@ function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 							</div>
 
 							<div className='grid grid-rows-1 m-2 p-1'>
-								<label className='font-bold'>
-									{" "}
-									Description:{" "}
-									<span className='font-normal'> {task.content}</span>{" "}
-								</label>
+								<label className='font-bold'> Description: </label>
 
 								<input
 									autoComplete='123'

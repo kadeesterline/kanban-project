@@ -89,6 +89,7 @@ function List({ lists, setLists, list, currentMember }) {
 		event.preventDefault()
 		let task = {
 			title: newTaskTitle,
+			priority: 1,
 			list_id: list.id,
 			user_id: currentUser.id,
 			member_id: currentMember.id,
