@@ -14,10 +14,9 @@ function Task({ tasks, setTasks, task }) {
 			{task.title}&nbsp;
 			<button
 				onClick={handleShowEditTask}
-				className='rounded-full bg-yellow-200 m-2 p-1'
+				className='rounded-full bg-slate-200 hover:bg-slate-300 m-2 px-2 text-sm'
 			>
-				{" "}
-				Update Task{" "}
+				Edit
 			</button>
 			{showEditTask ? (
 				<TaskEdit
@@ -27,7 +26,7 @@ function Task({ tasks, setTasks, task }) {
 					setShowEditTask={setShowEditTask}
 				/>
 			) : null}
-			<div>{task.rank}</div>
+			{/* <div>{task.rank}</div> */}
 		</div>
 	)
 }

@@ -1,7 +1,8 @@
 import React from "react"
+import { useEffect, useState } from "react"
+import { FiTrash, FiEdit3 } from "react-icons/fi"
 import Task from "./Task"
 import UpdateListForm from "./UpdateListForm"
-import { useEffect, useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { useUser } from "../context/UserContext"
 
@@ -55,6 +56,7 @@ function List({ lists, setLists, list, currentMember }) {
 					}
 					return li
 				})
+				setShowEditList(false)
 				setLists(updatedLists)
 			})
 	}
@@ -99,8 +101,34 @@ function List({ lists, setLists, list, currentMember }) {
 	}
 	return (
 		<div className='h-full'>
-			<div className='border border-solid rounded-lg w-80 mx-2 '>
-				<h1 className='text-l bg-slate-200 p-2'>{listName}</h1>
+			<div className='border border-solid rounded-l w-80 mx-2 '>
+				<div className='flex justify-between bg-slate-200'>
+					{showEditList ? (
+						<UpdateListForm
+							updateListFormState={updateListFormState}
+							setUpdateListFormState={setUpdateListFormState}
+							handleUpdateList={handleUpdateList}
+							listName={listName}
+						/>
+					) : (
+						<h1 className='text-l font-semibold p-2'>{listName}</h1>
+					)}
+
+					<div>
+						<button
+							className='rounded-full bg-slate-300 hover:bg-red-300 m-2 p-1 text-md'
+							onClick={handleDeleteList}
+						>
+							<FiTrash />
+						</button>
+						<button
+							className='rounded-full bg-slate-300 hover:bg-yellow-200 m-2 p-1 text-md'
+							onClick={handleShowEditList}
+						>
+							<FiEdit3 />
+						</button>
+					</div>
+				</div>
 				{tasks?.map((task, index) => {
 					return (
 						<Draggable
@@ -115,7 +143,7 @@ function List({ lists, setLists, list, currentMember }) {
 										{...provided.draggableProps}
 										{...provided.dragHandleProps}
 										style={{
-											backgroundColor: snapshot.isDragging ? "#" : "",
+											backgroundColor: snapshot.isDragging ? "" : "",
 											...provided.draggableProps.style,
 										}}
 									>
@@ -152,29 +180,7 @@ function List({ lists, setLists, list, currentMember }) {
 					>
 						{isAddTask ? "Cancel" : "Add Task"}
 					</button>
-					&nbsp;
-					<button
-						className='rounded-full bg-red-200 m-2 p-1'
-						onClick={handleDeleteList}
-					>
-						Delete List
-					</button>
-					&nbsp;
-					<button
-						className='rounded-full bg-yellow-200 m-2 p-1'
-						onClick={handleShowEditList}
-					>
-						Update List
-					</button>
 				</div>
-
-				{showEditList ? (
-					<UpdateListForm
-						updateListFormState={updateListFormState}
-						setUpdateListFormState={setUpdateListFormState}
-						handleUpdateList={handleUpdateList}
-					/>
-				) : null}
 			</div>
 		</div>
 	)
