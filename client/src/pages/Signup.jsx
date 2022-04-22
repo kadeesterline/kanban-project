@@ -58,13 +58,13 @@ function Signup() {
 							></input>
 						</div>
 						<div className='grid grid-rows-1  m-2 p-2'>
-							<label htmlFor='pass'>Password (8 characters minimum):</label>
+							<label htmlFor='pass'>Password:</label>
 							<input
 								type='password'
 								name='password'
 								onChange={(e) => handleChange(e)}
 								value={user.password}
-								className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline'
+								className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline placeholder:italic placeholder:text-slate-400'
 							></input>
 						</div>
 						<div className='grid grid-rows-1 m-2 p-2'>
@@ -74,7 +74,7 @@ function Signup() {
 								name='password_confirmation'
 								onChange={(e) => handleChange(e)}
 								value={user.password_confirmation}
-								className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline'
+								className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline placeholder:italic placeholder:text-slate-400'
 							></input>
 						</div>
 						<input

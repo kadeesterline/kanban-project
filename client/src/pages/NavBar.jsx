@@ -21,7 +21,7 @@ function NavBar() {
 		"rounded-full bg-blue-200 hover:bg-blue-300 m-3 px-2 py-1/2 text-sm border border-blue-200"
 
 	return (
-		<div className=' bg-amber-100 py-1 border-b-2 border-amber-200 sticky top-0'>
+		<div className=' bg-amber-100 py-1 border-b-2 border-amber-200 sticky top-0 z-50'>
 			<nav className='flex justify-between'>
 				<div>
 					<NavLink

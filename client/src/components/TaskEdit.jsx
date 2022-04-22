@@ -55,110 +55,117 @@ function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 	}
 
 	return (
-		<div className='justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none'>
-			<div className='relative w-auto my-6 mx-auto max-w-3xl'>
-				{/* content */}
-				<div className='border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none'>
-					{/* header */}
-					<div className='flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t'>
-						<h3 className='text-black float-left text-3xl'> {task.title} </h3>
-						<button
-							className='p-1 ml-auto bg-transparent border-0 text-black opacity-40 float-right text-3xl leading-none font-semibold outline-none focus:outline-none'
-							onClick={handleHideModal}
-						>
-							<span className=''>X</span>
-						</button>
-					</div>
-					<form onSubmit={handleEditTaskSubmit} autoComplete='false'>
-						<div className='grid grid-rows-1'>
-							<label className='font-bold'>
-								{" "}
-								Task Title: <span className='font-normal'>
+		<div>
+			<div className='justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none'>
+				<div className='relative w-auto my-6 mx-auto max-w-3xl'>
+					{/* content */}
+					<div className='border rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none'>
+						{/* header */}
+						<div className='flex items-start justify-between p-5 border border-solid bg-slate-200 rounded-t'>
+							<h3 className='text-black float-left text-3xl'> {task.title} </h3>
+							<button
+								className='p-1 ml-auto bg-transparent border-0 text-black opacity-40 float-right text-3xl leading-none font-semibold outline-none focus:outline-none'
+								onClick={handleHideModal}
+							>
+								<span className=''>X</span>
+							</button>
+						</div>
+						<form onSubmit={handleEditTaskSubmit} autoComplete='false'>
+							<div className='grid grid-rows-1 m-2 p-1'>
+								<label className='font-bold'>
 									{" "}
-									{task.title}{" "}
-								</span>{" "}
-							</label>
-							<input
-								type='text'
-								placeholder='Enter a new title'
-								id='title-input'
-								name='title'
-								value={editTaskFormState.title}
-								onChange={handleFormChange}
-								className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline'
-							/>
-						</div>
+									Task Title:{" "}
+									<span className='font-normal'> {task.title} </span>{" "}
+								</label>
+								<input
+									autoComplete='xyz123'
+									type='text'
+									placeholder='Enter a new title...'
+									id='title-input'
+									name='title'
+									value={editTaskFormState.title}
+									onChange={handleFormChange}
+									className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline placeholder:italic placeholder:text-slate-400'
+								/>
+							</div>
 
-						<div className='grid grid-rows-1'>
-							<label className='font-bold'>
-								{" "}
-								Description:{" "}
-								<span className='font-normal'> {task.content}</span>{" "}
-							</label>
+							<div className='grid grid-rows-1 m-2 p-1'>
+								<label className='font-bold'>
+									{" "}
+									Description:{" "}
+									<span className='font-normal'> {task.content}</span>{" "}
+								</label>
 
-							<input
-								type='text'
-								placeholder='Enter a new description'
-								id='description-input'
-								name='content'
-								value={editTaskFormState.content}
-								onChange={handleFormChange}
-								className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline'
-							/>
-						</div>
+								<input
+									autoComplete='123'
+									type='text'
+									placeholder='Enter a new description...'
+									id='description-input'
+									name='content'
+									value={editTaskFormState.content}
+									onChange={handleFormChange}
+									className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline placeholder:italic placeholder:text-slate-400'
+								/>
+							</div>
 
-						<label className='font-bold'>
-							{" "}
-							Priority: <span className='font-normal'> {task.priority} </span>
-						</label>
-						<select
-							name='priority'
-							id='priority-input'
-							value={editTaskFormState.priority}
-							onChange={handleFormChange}
-							className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline'
-						>
-							<option> 1 </option>
-							<option> 2 </option>
-							<option> 3 </option>
-							<option> 4 </option>
-							<option> 5 </option>
-						</select>
+							<div className='float-left m-2 p-1'>
+								<label className='font-bold m-2 p-1'>
+									{" "}
+									Priority:{" "}
+									<span className='font-normal'> {task.priority} </span>
+								</label>
+								<select
+									name='priority'
+									id='priority-input'
+									value={editTaskFormState.priority}
+									onChange={handleFormChange}
+									className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline'
+								>
+									<option> 1 </option>
+									<option> 2 </option>
+									<option> 3 </option>
+									<option> 4 </option>
+									<option> 5 </option>
+								</select>
+							</div>
+							<div className='float-left m-2 p-1'>
+								<label className='font-bold m-2 p-1'>
+									{" "}
+									Due Date:{" "}
+									<span className='font-normal'>
+										{task?.due_date
+											? dayjs(task.due_date).format("MM/DD/YYYY")
+											: "No date"}
+									</span>{" "}
+								</label>
+								<input
+									type='date'
+									id='duedate-input'
+									name='due_date'
+									value={editTaskFormState.due_date}
+									onChange={handleFormChange}
+									className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline'
+								/>
+							</div>
 
-						<label className='font-bold'>
-							{" "}
-							Due Date:{" "}
-							<span className='font-normal'>
-								{task?.due_date
-									? dayjs(task.due_date).format("MM/DD/YYYY")
-									: "No date"}
-							</span>{" "}
-						</label>
-						<input
-							type='date'
-							id='duedate-input'
-							name='due_date'
-							value={editTaskFormState.due_date}
-							onChange={handleFormChange}
-							className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline'
-						/>
-
-						{/* <button className='rounded-full bg-yellow-200 m-2 p-1' type='submit'>
+							{/* <button className='rounded-full bg-yellow-200 m-2 p-1' type='submit'>
 								{" "}
 								Submit Changes{" "}
 							</button> */}
-					</form>
-					<div className='flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b'>
-						<button
-							className=' rounded-full bg-yellow-200 p-1 ml-auto border-0 text-black float-right leading-none font-semibold outline-none focus:outline-none '
-							type='submit'
-							onClick={handleEditTaskSubmit}
-						>
-							submit changes
-						</button>
+						</form>
+						<div className='flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b'>
+							<button
+								className=' rounded-full bg-blue-200 p-2 m-2 ml-auto border-0 text-black float-right leading-none font-semibold outline-none focus:outline-none '
+								type='submit'
+								onClick={handleEditTaskSubmit}
+							>
+								submit changes
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
+			<div className='opacity-50 fixed inset-0 z-40 bg-black'></div>
 		</div>
 	)
 }

@@ -21,6 +21,7 @@ function AddListForm({ addListFormState, setAddListFormState, handleAddList }) {
 					name='name'
 					value={addListFormState.name}
 					onChange={handleChange}
+					className='placeholder:italic placeholder:text-slate-400'
 				/>
 			</form>
 		</div>

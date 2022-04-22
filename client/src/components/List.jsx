@@ -165,6 +165,7 @@ function List({ lists, setLists, list, currentMember }) {
 							type='text'
 							value={newTaskTitle}
 							onChange={(e) => setNewTaskTitle(e.target.value)}
+							className='placeholder:italic placeholder:text-slate-400'
 						/>
 						<button className='rounded-full bg-green-200 m-2 p-1' type='submit'>
 							Add Task

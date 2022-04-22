@@ -22,10 +22,11 @@ function UpdateListForm({
 				<label>name</label>
 				<input
 					type='text'
-					placeholder='enter new name'
+					placeholder='Enter a new name'
 					name='name'
 					value={updateListFormState.name}
 					onChange={handleChange}
+					className='placeholder:italic placeholder:text-slate-400'
 				/>
 			</form>
 		</div>
