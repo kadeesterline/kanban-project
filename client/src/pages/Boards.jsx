@@ -57,12 +57,12 @@ function Boards() {
 		))
 
 	return (
-		<div>
+		<div className='p-4'>
 			<div className='grid grid-cols-4 '>{boardCells}</div>
 			<div className='flex items-center justify-center'>
 				<div className='grid grid-rows-1'>
 					<button
-						className='rounded-full bg-blue-200 m-2 p-2 hover:bg-blue-300'
+						className='rounded-full bg-blue-200 mt-5 p-2 hover:bg-blue-300 hover:shadow-lg hover:shadow-blue-300 transition ease-in-out'
 						onClick={handleShowAddBoard}
 					>
 						{showAddBoard ? "Hide Form" : "Add Board"}

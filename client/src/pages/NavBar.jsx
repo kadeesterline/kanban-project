@@ -16,9 +16,9 @@ function NavBar() {
 	}
 
 	let activeClass =
-		"rounded-full bg-blue-300 hover:bg-blue-400 m-3 px-2 py-1/2 text-sm border border-blue-500"
+		"rounded-full bg-blue-500 hover:bg-blue-600 m-3 px-2 py-1/2 text-sm hover:shadow-md hover:shadow-blue-600 transition ease-in-out text-white"
 	let inactiveClass =
-		"rounded-full bg-blue-200 hover:bg-blue-300 m-3 px-2 py-1/2 text-sm border border-blue-200"
+		"rounded-full bg-blue-200 hover:bg-blue-300 m-3 px-2 py-1/2 text-sm hover:shadow-md hover:shadow-blue-400 transition ease-in-out"
 
 	return (
 		<div className=' bg-amber-100 py-1 border-b-2 border-amber-200 sticky top-0 z-50'>
@@ -44,9 +44,14 @@ function NavBar() {
 
 				{currentUser.id ? (
 					<div>
-						<span to='' className='text-sm font-medium'>
+						<NavLink
+							to='/profile'
+							className={({ isActive }) =>
+								isActive ? activeClass : inactiveClass
+							}
+						>
 							Signed in as {currentUser.username}
-						</span>
+						</NavLink>
 						<Link className={inactiveClass} onClick={handleLogout} to='/'>
 							Logout
 						</Link>

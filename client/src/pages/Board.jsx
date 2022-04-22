@@ -6,6 +6,7 @@ import AddListForm from "../components/AddListForm"
 import List from "../components/List"
 import { DragDropContext, Droppable } from "react-beautiful-dnd"
 import { useUser } from "../context/UserContext"
+import { FiTrash, FiEdit3, FiPlusSquare } from "react-icons/fi"
 
 function Board() {
 	let navigate = useNavigate()
@@ -189,14 +190,48 @@ function Board() {
 	return (
 		<>
 			{!currentMember?.id ? (
-				<div>
-					<p>You are not a member of this board</p>
-					<button onClick={handleJoinBoard}>Join!</button>
+				<div className='h-screen grid place-content-center bg-blue-50'>
+					<div className='flex flex-col gap-1 items-center'>
+						<p className='text-2xl font-bold'>
+							You are not a member of this board
+						</p>
+						<button
+							className='rounded-full bg-blue-200 m-2 p-2 hover:bg-blue-300 hover:shadow-lg hover:shadow-blue-300 transition ease-in-out'
+							onClick={handleJoinBoard}
+						>
+							Join!
+						</button>
+					</div>
 				</div>
 			) : (
 				<div className='h-full'>
 					<div className='p-8'>
-						<h1 className='text-xl font-bold mb-3'>{board.name}</h1>
+						<div className='flex items-start'>
+							<h1 className='text-2xl font-bold mb-3 p-1'>{board.name}</h1>
+
+							<button
+								onClick={handleDeleteBoard}
+								className='inline-block rounded-full bg-slate-300 hover:bg-red-200  mt-2 mx-1 p-1'
+							>
+								<FiTrash />
+							</button>
+							<br />
+							<button
+								onClick={handleShowEditBoard}
+								className='inline-block rounded-full bg-slate-300 hover:bg-yellow-200  mt-2 mx-1 p-1'
+							>
+								<FiEdit3 />
+							</button>
+							<br />
+							{showUpdateBoard ? (
+								<UpdateBoardForm
+									updateFormState={updateFormState}
+									setUpdateFormState={setUpdateFormState}
+									handleUpdateBoard={handleUpdateBoard}
+								/>
+							) : null}
+						</div>
+
 						{boardAdmin && (
 							<p className='font-mono text-sm text-stone-400'>
 								Admin: {boardAdmin}
@@ -206,14 +241,14 @@ function Board() {
 							<p className='font-mono text-sm text-stone-400'>
 								Members:{" "}
 								{boardMembers.map((m) => (
-									<span>{m} </span>
+									<span key={m}>{m} </span>
 								))}
 							</p>
 						)}
 					</div>
 
 					<DragDropContext onDragEnd={(result) => handleDragEnd(result)}>
-						<div className='flex flex-row overflow-x-scroll'>
+						<div className='flex flex-row overflow-x-scroll ml-5'>
 							{lists?.map((list) => {
 								return (
 									<Droppable key={list.id} droppableId={list.id?.toString()}>
@@ -242,13 +277,12 @@ function Board() {
 									</Droppable>
 								)
 							})}
-							<div className='rounded-lg shadow-lg mx-2'>
+							<div className='  flex items-center justify-center border shadow-lg shadow-blue-100 mx-2 mb-5 h-30 w-80'>
 								<button
 									onClick={handleShowAddList}
-									className='rounded-full bg-green-200 m-2 p-1'
+									className='rounded-full bg-green-200 hover:bg-green-300 hover:shadow-md hover:shadow-green-500 transition ease-in-out px-2 py-2'
 								>
-									{" "}
-									Add List{" "}
+									<FiPlusSquare className='text-xl ' />
 								</button>
 								<br />
 								{showAddListForm ? (
@@ -259,29 +293,6 @@ function Board() {
 									/>
 								) : null}
 								<br />
-								<button
-									onClick={handleDeleteBoard}
-									className='rounded-full bg-red-200 m-2 p-1'
-								>
-									{" "}
-									Delete Board{" "}
-								</button>
-								<br />
-								<button
-									onClick={handleShowEditBoard}
-									className='rounded-full bg-yellow-200 m-2 p-1'
-								>
-									{" "}
-									Update Board{" "}
-								</button>
-								<br />
-								{showUpdateBoard ? (
-									<UpdateBoardForm
-										updateFormState={updateFormState}
-										setUpdateFormState={setUpdateFormState}
-										handleUpdateBoard={handleUpdateBoard}
-									/>
-								) : null}
 							</div>
 						</div>
 						<br />

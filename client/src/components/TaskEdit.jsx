@@ -1,6 +1,7 @@
 import React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import dayjs from "dayjs"
+import { FiX } from "react-icons/fi"
 
 function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 	let editTaskFormInitialState = {
@@ -13,6 +14,26 @@ function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 	const [editTaskFormState, setEditTaskFormState] = useState(
 		editTaskFormInitialState
 	)
+
+	useEffect(() => {
+		console.log(task)
+		setEditTaskFormState({
+			...editTaskFormState,
+			title: task?.title?.toString(),
+		})
+		setEditTaskFormState({
+			...editTaskFormState,
+			content: task?.content?.toString(),
+		})
+		setEditTaskFormState({
+			...editTaskFormState,
+			priority: task?.priority?.toString(),
+		})
+		setEditTaskFormState({
+			...editTaskFormState,
+			due_date: task?.due_date?.toString(),
+		})
+	}, [task])
 
 	const handleFormChange = (event) => {
 		const { name, value } = event.target
@@ -62,12 +83,17 @@ function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 					<div className='border rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none'>
 						{/* header */}
 						<div className='flex items-start justify-between p-5 border border-solid bg-slate-200 rounded-t'>
-							<h3 className='text-black float-left text-3xl'> {task.title} </h3>
+							<h3 className='text-black float-left text-3xl font-bold'>
+								{" "}
+								{task.title}{" "}
+							</h3>
 							<button
 								className='p-1 ml-auto bg-transparent border-0 text-black opacity-40 float-right text-3xl leading-none font-semibold outline-none focus:outline-none'
 								onClick={handleHideModal}
 							>
-								<span className=''>X</span>
+								<span className=''>
+									<FiX />
+								</span>
 							</button>
 						</div>
 						<form onSubmit={handleEditTaskSubmit} autoComplete='false'>
@@ -155,7 +181,7 @@ function TaskEdit({ tasks, setTasks, task, setShowEditTask }) {
 						</form>
 						<div className='flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b'>
 							<button
-								className=' rounded-full bg-blue-200 p-2 m-2 ml-auto border-0 text-black float-right leading-none font-semibold outline-none focus:outline-none '
+								className=' rounded-full bg-blue-200 hover:bg-blue-300  p-2 m-2 ml-auto border-0 text-black float-right leading-none font-semibold outline-none focus:outline-none '
 								type='submit'
 								onClick={handleEditTaskSubmit}
 							>

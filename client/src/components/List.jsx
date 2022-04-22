@@ -1,6 +1,6 @@
 import React from "react"
 import { useEffect, useState } from "react"
-import { FiTrash, FiEdit3 } from "react-icons/fi"
+import { FiTrash, FiEdit3, FiPlusCircle } from "react-icons/fi"
 import Task from "./Task"
 import UpdateListForm from "./UpdateListForm"
 import { Draggable } from "react-beautiful-dnd"
@@ -100,20 +100,21 @@ function List({ lists, setLists, list, currentMember }) {
 		setShowEditList(!showEditList)
 	}
 	return (
-		<div className='h-full'>
-			<div className='border border-solid rounded-l w-80 mx-2 '>
+		<div className='h-full mb-5'>
+			<div className='border border-solid shadow-lg shadow-blue-100 rounded-l w-80 mx-2 '>
 				<div className='flex justify-between bg-slate-200'>
-					{showEditList ? (
-						<UpdateListForm
-							updateListFormState={updateListFormState}
-							setUpdateListFormState={setUpdateListFormState}
-							handleUpdateList={handleUpdateList}
-							listName={listName}
-						/>
-					) : (
+					<div className='flex-col'>
 						<h1 className='text-l font-semibold p-2'>{listName}</h1>
-					)}
 
+						{showEditList ? (
+							<UpdateListForm
+								updateListFormState={updateListFormState}
+								setUpdateListFormState={setUpdateListFormState}
+								handleUpdateList={handleUpdateList}
+								listName={listName}
+							/>
+						) : null}
+					</div>
 					<div>
 						<button
 							className='rounded-full bg-slate-300 hover:bg-red-300 m-2 p-1 text-md'
@@ -160,27 +161,40 @@ function List({ lists, setLists, list, currentMember }) {
 					)
 				})}
 				{isAddTask ? (
-					<form onSubmit={onNewTask}>
+					<form onSubmit={onNewTask} className='w-full'>
 						<input
 							type='text'
 							value={newTaskTitle}
 							onChange={(e) => setNewTaskTitle(e.target.value)}
-							className='placeholder:italic placeholder:text-slate-400'
+							placeholder='Add new task...'
+							className='border rounded w-auto py-2 m-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline placeholder:italic placeholder:text-slate-400'
 						/>
-						<button className='rounded-full bg-green-200 m-2 p-1' type='submit'>
-							Add Task
+						<button
+							className='rounded-full bg-green-200 hover:bg-green-300 hover:shadow-md hover:shadow-green-500 transition ease-in-out m-2 p-2'
+							type='submit'
+						>
+							<FiPlusCircle />
+						</button>
+
+						<button
+							onClick={() => setIsAddTask((isAddTask) => !isAddTask)}
+							className='text-sm text-slate-500'
+						>
+							Cancel
 						</button>
 					</form>
 				) : (
 					<div></div>
 				)}
-				<div>
-					<button
-						className='rounded-full bg-green-200 m-2 p-1'
-						onClick={() => setIsAddTask((isAddTask) => !isAddTask)}
-					>
-						{isAddTask ? "Cancel" : "Add Task"}
-					</button>
+				<div className='flex justify-center'>
+					{!isAddTask && (
+						<button
+							className='rounded-full bg-green-200 hover:bg-green-300 hover:shadow-md hover:shadow-green-500 transition ease-in-out m-2 px-2 py-2'
+							onClick={() => setIsAddTask((isAddTask) => !isAddTask)}
+						>
+							<FiPlusCircle className='text-xl' />
+						</button>
+					)}
 				</div>
 			</div>
 		</div>

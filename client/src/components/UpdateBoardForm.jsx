@@ -15,7 +15,7 @@ function UpdateBoardForm({
 		handleUpdateBoard()
 	}
 	return (
-		<div className='bg-white border border-solid  w-80'>
+		<div className='bg-white   w-80 m-2 p-2'>
 			<form onSubmit={handleSubmit} autoComplete='false'>
 				<label className='font-bold'>name:</label>{" "}
 				<input
@@ -24,6 +24,7 @@ function UpdateBoardForm({
 					name='name'
 					value={updateFormState.name}
 					onChange={handleChange}
+					className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline placeholder:italic placeholder:text-slate-400'
 				/>
 				<button className='rounded-full bg-green-200 m-2 p-1' type='submit'>
 					{" "}

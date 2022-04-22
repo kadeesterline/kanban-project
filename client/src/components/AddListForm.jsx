@@ -12,16 +12,16 @@ function AddListForm({ addListFormState, setAddListFormState, handleAddList }) {
 	}
 
 	return (
-		<div>
+		<div className='m2 p-2'>
 			<form onSubmit={handleSubmit} autoComplete='false'>
-				<label>name</label>
+				<label className='font-bold'>name</label>
 				<input
 					type='text'
 					placeholder='enter a name'
 					name='name'
 					value={addListFormState.name}
 					onChange={handleChange}
-					className='placeholder:italic placeholder:text-slate-400'
+					className='border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline placeholder:italic placeholder:text-slate-400'
 				/>
 			</form>
 		</div>
